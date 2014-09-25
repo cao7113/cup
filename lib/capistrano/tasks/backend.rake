@@ -52,8 +52,12 @@ namespace :backend do
         end
 
         within release_path do
-          execute :rails, "s -e #{rackenv} -d -p #{port}"
-          execute :echo, "#{port} > tmp/port"
+          if railsapp?
+            execute :rails, "s -e #{rackenv} -d -p #{port}"
+            execute :echo, "#{port} > tmp/port"
+          else #plain, rack
+            execute :echo, 'Nothing to do!'
+          end
         end
       end
     end

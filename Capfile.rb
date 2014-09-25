@@ -11,26 +11,20 @@ def appname
   @appname ||= ENV['APP_NAME']
 end
 
-def set_apptype
-  @apptype = ENV['APP_TYPE'] #where to detect?
-  unless @apptype and [:plain, :rack, :rails].include?(@apptype.to_sym)
-    raise "Not support app type: #{@apptype}"
-  end
-  @apptype = @apptype.to_sym
+def apptype
+  @apptype ||= (ENV['APP_TYPE']||'plain').to_sym #where to detect?
 end
 
-set_apptype
-
 def railsapp?
-  @apptype == :rails
+  apptype == :rails
 end
 
 def plainapp?
-  @apptype == :plain
+  apptype == :plain
 end
 
 def rackapp?
-  [:rack, :rails].include?(@apptype)
+  [:rack, :rails].include?(apptype)
 end
 
 def stage
@@ -50,7 +44,7 @@ end
 #需不需要 bundler等
 
 def require_bundler?
-  ![:plain].include?(@apptype)
+  ![:plain].include?(apptype)
 end
 
 #TODO related to cap invocation location
@@ -69,7 +63,7 @@ $:.unshift lib_dir unless $:.include?(lib_dir)
 require 'fix/sshkit/pretty'
 require 'fix/rake/trace_output'
 
-#require 'capistrano/console' #remote interactive console
+require 'capistrano/console' #remote interactive console
 
 # Load DSL and Setup Up Stages
 require 'capistrano/setup'
