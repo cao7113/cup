@@ -4,14 +4,14 @@
 
 项目开发理念：
 
- × 部署工具应该可以独立于项目存在！
+* 部署工具应该可以独立于项目存在！
 
 ### Usage
 
-  ./setup
-  cup help
-  cup init
-  cup dev|test|prod|... deploy
+* ./setup
+* cup help
+* cup init
+* cup dev|test|prod|... deploy
 
 ### TODOS
 
