@@ -6,13 +6,35 @@ require 'pry'
 require 'pry-debugger'
 #make a logger for capistrano?
 
-#ENV['APP_NAME'] interface with world!
-def appname
-  @appname ||= ENV['APP_NAME']
+def approot
+  @approot ||= ENV['APP_ROOT']||Dir.pwd
 end
 
+#因是在cup root中执行cap，修复需要在项目中运行的路径问题
+def approot_run 
+  return unless block_given?
+  begin
+    pwd = Dir.pwd
+    Dir.chdir approot
+    yield
+  ensure
+    Dir.chdir pwd
+  end
+end
+
+#location where rake or cap is invokied!
+#traditional cap usage, same with approot
+def rake_root
+  Rake.original_dir 
+end
+
+def appname
+  @appname ||= ENV['APP_NAME']||File.basename(approot)
+end
+
+#read from .cuprc???
 def apptype
-  @apptype ||= (ENV['APP_TYPE']||'plain').to_sym #where to detect?
+  @apptype ||= (ENV['APP_TYPE']||'plain').to_sym
 end
 
 def railsapp?
@@ -39,55 +61,28 @@ def prodlike?
   rackenv and [:production, :staging, :online].include?(rackenv.to_sym)
 end
 
-#读取应用的设置信息？ 包括：
-#是否需要读 本地的项目目录
-#需不需要 bundler等
-
 def require_bundler?
-  ![:plain].include?(apptype)
-end
-
-#TODO related to cap invocation location
-def rake_root
-  @rake_root ||= ENV['APP_ROOT'] #Rake.original_dir #location where rake or cap is invokied!
-end
-
-def root_cmd cmd
-  "cd #{rake_root} && #{cmd} && cd - >/dev/null"
+  File.exist?(File.join(approot, 'Gemfile'))
 end
 
 cup_root = File.dirname(__FILE__) 
 lib_dir = File.join(cup_root, 'lib')
 $:.unshift lib_dir unless $:.include?(lib_dir)
-#Load some fixes or customization
 require 'fix/sshkit/pretty'
 require 'fix/rake/trace_output'
+require 'git_check_strategy'
 
 require 'capistrano/console' #remote interactive console
+require 'capistrano/setup' # Load DSL and Setup Up Stages
+require 'capistrano/deploy' # Includes default deployment tasks
 
-# Load DSL and Setup Up Stages
-require 'capistrano/setup'
-
-# Includes default deployment tasks
-require 'capistrano/deploy'
-
-# Includes tasks from other gems included in your Gemfile
-#
-# For documentation on these, see for example:
-#
-#   https://github.com/capistrano/rbenv
-#   https://github.com/capistrano/bundler
-#   https://github.com/capistrano/rails
-#
 # require 'capistrano/rbenv'
 if require_bundler?
   require 'capistrano/bundler'
 end
 if railsapp?
   require 'capistrano/rails/migrations'
-  ##use local assets precompilation to reduce server overload
-  #require 'capistrano/rails/assets'
+  #require 'capistrano/rails/assets' #local assets precompilation to reduce server overload
 end
 
-# Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }

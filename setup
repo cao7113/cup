@@ -1,0 +1,82 @@
+#!/usr/bin/env bash 
+set -e
+
+put_where=/usr/local/bin
+cup_root=$(readlink -f $(dirname $0))
+#echo ==cup root: $cup_root
+
+tmpfile=/tmp/cup.bin.script
+cat <<-Script >$tmpfile
+#!/usr/bin/env bash 
+#Generated at $(date) by $0
+set -e
+cup_root=$cup_root
+[ -e \$cup_root/Capfile.rb ]||{ echo Seems invalid \$cup_root && exit 1; }
+approot=\${APP_ROOT:-\`pwd\`}
+appname=\${APP_NAME:-\$(basename \$approot)} 
+echo ==accessing appname: \$appname in \$approot
+
+function detect_apptype(){
+  [ \$# -lt 1 ] && echo Invalid usage && exit 1
+  approot=\$1
+  #detect app type
+  if [ -f \$approot/config/routes.rb ];then
+    apptype=rails
+  else
+    if [ -f \$approot/config.ru ];then
+      apptype=rack
+    else
+      apptype=plain
+    fi
+  fi
+  echo \$apptype
+}
+
+case "\$1" in
+  init) #init in a project root to get started
+    #[ -f \$approot/.cuprc ] && echo Has inited in \$approot/.cuprc && exit 1
+    echo "export APP_TYPE=\$(detect_apptype \$approot)" > \$approot/.cuprc
+    exit
+    ;;
+  type|apptype)
+    detect_apptype \$approot
+    exit
+    ;;
+  up|update)
+    cd \$cup_root && git pull && cd - >/dev/null
+    exit
+    ;;
+  install|setup) #reinstall
+    \$cup_root/setup
+    exit
+    ;;
+  log)
+    apptype=\$(detect_apptype \$approot)
+    case "\$apptype" in
+      rails)
+        tail -f -n 200 /sandbox/\${2:-dev}/\$appname/current/log/\${3:-development}.log
+        ;;
+      *)
+        echo Not support log for \$apptype
+        ;;
+    esac
+    exit
+    ;;
+  h|help)
+    cat \$0
+    exit
+    ;;
+esac
+
+## normal cap usage
+[ -f \$approot/.cuprc ] || { echo No .cuprc in \$approot && exit 1; }
+source .cuprc && echo Loaded \$approot/.cuprc
+cd \$cup_root
+stage=\${1:-dev}; shift
+APP_ROOT=\$approot APP_NAME=\$appname cap \$stage \$*
+cd - >/dev/null
+Script
+
+chmod +x $tmpfile
+sudo mv -b $tmpfile $put_where/cup
+echo Installed new cup bin into $put_where/cup

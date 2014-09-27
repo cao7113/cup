@@ -9,19 +9,14 @@ namespace :info do
 
   desc "Try run_locally"
   task :try do
-    #on roles(:app).first do
-      ##execute :env 
-      ##execute :ruby, '-v'
-      #execute :pwd
-    #end
-
-    #run_locally do
-      ##execute :env
-      #execute "pwd && bundle show && pwd" #命令执行的时候还是在 oridingal dir？
-      #execute :pwd
-    #end
-    #sh "(cd ~/dev/railslab && bundle show)"
-    binding.pry
-    sh "cd ~ && bundle show"
+    run_locally do
+      #execute :env 
+      execute :pwd
+      execute :ruby, '-v'
+    end
+    on roles(:app).first do
+      execute :env 
+      execute :ruby, '-v 2>&1'
+    end
   end
 end
