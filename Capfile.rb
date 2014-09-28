@@ -6,6 +6,8 @@ require 'pry'
 require 'pry-debugger'
 #make a cup logger write to /sandbox/deployment.log
 
+require 'bundler'
+
 def approot
   @approot ||= ENV['APP_ROOT']||Dir.pwd
 end
