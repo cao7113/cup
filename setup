@@ -50,6 +50,10 @@ case "\$1" in
     \$cup_root/setup
     exit
     ;;
+  scan)
+    sudo netstat -lnptu|grep ":4.*ruby"
+    exit
+    ;;
   log)
     apptype=\$(detect_apptype \$approot)
     case "\$apptype" in
