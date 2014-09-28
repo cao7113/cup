@@ -73,7 +73,11 @@ esac
 source .cuprc && echo Loaded \$approot/.cuprc
 cd \$cup_root
 stage=\${1:-dev}; shift
+if [ -e \$approot/Gemfile ];then
+APP_ROOT=\$approot APP_NAME=\$appname bundle exec cap \$stage \$*
+else
 APP_ROOT=\$approot APP_NAME=\$appname cap \$stage \$*
+fi
 cd - >/dev/null
 Script
 

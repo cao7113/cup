@@ -28,7 +28,9 @@ namespace :deploy do
         diff_cmd = "git diff --quiet #{last_revision} #{to_revision} -- #{fetch(:check_assets_paths).join(' ')}"
         if fetch(:force_assets_compile) || !last_revision || (not same_revision and !system(diff_cmd))
           run_locally do
-            execute "bundle exec rake assets:precompile"
+            Bundler.with_clean_env do
+              execute "bundle exec rake assets:precompile"
+            end
           end
           assets_dir = fetch(:shared_assets_path).join(to_revision)
           on roles(:app) do |role|
