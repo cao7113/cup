@@ -86,3 +86,4 @@ if railsapp?
 end
 
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
+import 'lib/backend/init.rake'
