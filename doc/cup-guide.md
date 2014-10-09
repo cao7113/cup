@@ -44,7 +44,6 @@ using shared_path/db.sqlite3
   config/deploy.rb相当于默认设置
   _stage_.rb进行针对环境的适配
 
-* backend --> app
 * assets host --> name server
 * rails app --> rack app
 * 根据请求自动激活，否则进入休眠状态，以便在本地可以节约cpu资源

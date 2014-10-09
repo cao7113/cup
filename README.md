@@ -24,3 +24,9 @@
   now use cup root? why?
 
 * run_locally problem?
+
+### Ref
+
+* https://github.com/peritor/webistrano
+* https://github.com/railsware/caphub
+* https://github.com/ayanko/caphub-slides

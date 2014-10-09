@@ -1,14 +1,14 @@
 namespace :load do
   task :defaults do
     set :uwsgi_emperor_conf_dir, '/etc/uwsgi'
-    set :uwsgi_emperor_user, fetch(:app_user)||ENV["USER"]
+    set :uwsgi_emperor_user, fetch(:runner)
     set :uwsgi_emperor_job_name, 'emperor'
     set :uwsgi_emperor_init, "/etc/init/#{fetch(:uwsgi_emperor_job_name)}.conf"
     set :uwsgi_emperor_log, "/var/log/#{fetch(:uwsgi_emperor_job_name)}.log"
   end
 end
 
-namespace "backend:uwsgi" do
+namespace "server:uwsgi" do
   namespace :emperor do
 
     desc 'Install uWSGI emperor'

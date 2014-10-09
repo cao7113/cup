@@ -10,6 +10,8 @@ set :format, :pretty
 set :keep_releases, 3 #5
 set :scm, :git
 
+#set :locale, :zh
+
 if railsapp?
   set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets tmp/sessions vendor/bundle public/system}
   #set :linked_files, %w{config/secrets.yml}
@@ -112,7 +114,7 @@ namespace :deploy do
         info "====Replace restart way!"
       end
     else
-      invoke 'backend:restart'
+      invoke 'server:restart'
     end
   end
 
@@ -129,7 +131,7 @@ namespace :deploy do
   #check status task after finished and notify!!!
 
   desc "Purge deployment state"
-  task :purge=>'backend:stop' do
+  task :purge=>'server:stop' do
     on roles(:app) do
       execute :rm, "-rf", releases_path
       execute :rm, "-rf", current_path

@@ -74,18 +74,22 @@ require 'fix/sshkit/pretty'
 require 'fix/rake/trace_output'
 require 'git_check_strategy'
 
-require 'capistrano/console' #remote interactive console
 require 'capistrano/setup' # Load DSL and Setup Up Stages
 require 'capistrano/deploy' # Includes default deployment tasks
+require 'capistrano/console' #remote interactive console
 
 # require 'capistrano/rbenv'
 if require_bundler?
   require 'capistrano/bundler'
 end
+
+Dir.glob('lib/common/*.rake').each { |r| import r }
+
 if railsapp?
   require 'capistrano/rails/migrations'
   #require 'capistrano/rails/assets' #local assets precompilation to reduce server overload
+  Dir.glob('lib/rails/*.rake').each { |r| import r }
 end
 
-Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
-import 'lib/backend/init.rake'
+#TODO 判断是否需要加载server
+import 'lib/server/setup.rake'
