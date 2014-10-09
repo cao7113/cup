@@ -67,6 +67,11 @@ def require_bundler?
   File.exist?(File.join(approot, 'Gemfile'))
 end
 
+##dsl extension
+def setifnil(key, value)
+  set(key, value) if fetch(key).nil?
+end
+
 cup_root = File.dirname(__FILE__) 
 lib_dir = File.join(cup_root, 'lib')
 $:.unshift lib_dir unless $:.include?(lib_dir)

@@ -1,5 +1,7 @@
+setifnil :app_server, :webrick #default app server
+
 def app_server
-  fetch(:app_server, :webrick)
+  fetch(:app_server)
 end
 
 namespace :server do
