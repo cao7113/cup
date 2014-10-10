@@ -1,10 +1,10 @@
 namespace :load do
   task :defaults do
-    set :uwsgi_role, :app
-    set :uwsgi_env, -> { fetch(:rack_env, fetch(:rails_env, 'production')) }
-    set :uwsgi_access_log, -> { File.join(shared_path, 'log', 'uwsgi_access.log') }
-    set :uwsgi_error_log, -> { File.join(shared_path, 'log', 'uwsgi_error.log') }
-    set :uwsgi_bin_uwsgi, `which uwsgi`.chomp
+    setifnil :uwsgi_role, :app
+    setifnil :uwsgi_env, rackenv
+    setifnil :uwsgi_access_log, -> { File.join(shared_path, 'log', 'uwsgi_access.log') }
+    setifnil :uwsgi_error_log, -> { File.join(shared_path, 'log', 'uwsgi_error.log') }
+    setifnil :uwsgi_bin, `which uwsgi`.chomp #本地需要安装uwgi？
 
     #set :uwsgi_pid, -> { File.join(shared_path, 'tmp', 'pids', 'uwsgi.pid') }
     #set :uwsgi_bind, -> { File.join('unix://', shared_path, 'tmp', 'sockets', 'uwsgi.sock') }
@@ -29,7 +29,7 @@ namespace "server:uwsgi" do
     on roles(fetch(:uwsgi_role)) do |role|
       @role = role
       execute "echo $PATH"
-      execute "echo #{fetch(:uwsgi_bin_uwsgi)}"
+      execute "echo #{fetch(:uwsgi_bin)}"
     end
   end
 

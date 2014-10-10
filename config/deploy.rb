@@ -4,6 +4,10 @@ lock '3.2.1'
 set :application, appname
 set :repo_url, "http://localhost:6666/#{appname}"
 
+
+#set some init
+set :rbenv_root, '/opt/rbenv'
+
 #ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 set :branch, :master
 set :format, :pretty
@@ -23,7 +27,7 @@ end
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-set :runner, fetch(:runner, Etc.getlogin)
+set :runner, fetch(:runner, local_user)
 set :sandbox, fetch(:sandbox, '/sandbox')
 set :sandbox_shared, fetch(:sandbox_shared, File.join(fetch(:sandbox), 'shared'))
 

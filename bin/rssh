@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+#Usage: $0 sshkit_script
+
+require 'sshkit'
+require 'sshkit/dsl'
+
+abort "Require a sshkit file" if ARGV.size < 1
+sshkit_file = File.expand_path(ARGV.first)
+
+abort "Not found file: #{sshkit_file}!" unless File.exists?(sshkit_file)
+
+load sshkit_file
