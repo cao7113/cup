@@ -1,0 +1,10 @@
+#Emperor uWSGI job script generated at <%=Time.now%>
+
+description "uWSGI Emperor Job"
+start on runlevel [2345]
+stop on runlevel [06]
+
+setuid <%=runner%>
+setgid <%=runner%>
+
+exec `rbenv which uwsgi` --master --die-on-term --emperor <%=fetch(:emperor_confd)%>

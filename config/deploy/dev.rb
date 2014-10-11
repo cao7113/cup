@@ -1,5 +1,6 @@
 set :rack_env, 'development'
-server 'localhost', user: runner, roles: %w{web app}, primary: true #, my_property: :my_value
+server 'localhost', user: runner, roles: %w{web app db}, primary: true #, my_property: :my_value
+set :app_server, :uwsgi
 
 if require_bundler?
 #capistrano-bundler

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+#load other sshkit rc file?
+irb -r 'sshkit' -r 'sshkit/dsl'

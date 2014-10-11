@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 #Usage: $0 sshkit_script
 
+require 'pry'
+require 'pry-debugger'
+
 require 'sshkit'
 require 'sshkit/dsl'
+require_relative '../lib/sshkit_profile.rb'
 
 abort "Require a sshkit file" if ARGV.size < 1
 sshkit_file = File.expand_path(ARGV.first)

@@ -67,9 +67,17 @@ def require_bundler?
   File.exist?(File.join(approot, 'Gemfile'))
 end
 
-##dsl extension
+##dsl extension refactor??? TODO
 def setifnil(key, value)
   set(key, value) if fetch(key).nil?
+end
+
+def template_upload(from, to, options={})
+  if File.file?(from)
+    upload! StringIO.new(ERB.new(File.read(from)).result(binding)), to
+  else
+    abort "Not found template: #{from}"
+  end
 end
 
 cup_root = File.dirname(__FILE__) 
@@ -96,5 +104,5 @@ if railsapp?
   Dir.glob('lib/rails/*.rake').each { |r| import r }
 end
 
-#TODO 判断是否需要加载server
-import 'lib/server/setup.rake'
+#improve to only load current required?
+Dir.glob('lib/server/*.rake').each { |r| import r }

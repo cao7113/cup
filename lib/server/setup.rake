@@ -1,13 +1,18 @@
-setifnil :app_server, :webrick #default app server
-
 def app_server
-  fetch(:app_server)
+  fetch(:app_server, :webrick)
 end
 
 namespace :server do
   %w{start stop restart status url}.each do |action|
     Rake::Task.define_task(action) do
       invoke "server:#{app_server}:#{action}"
+    end
+  end
+
+  desc "Get current server info"
+  task :info do
+    on roles(:app) do
+      log "== Current app server: #{app_server}"
     end
   end
 
@@ -25,5 +30,3 @@ namespace :server do
     end
   end
 end
-
-import "lib/server/#{app_server}.rake"
