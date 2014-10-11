@@ -7,4 +7,4 @@ stop on runlevel [06]
 setuid <%=runner%>
 setgid <%=runner%>
 
-exec `rbenv which uwsgi` --master --die-on-term --emperor <%=fetch(:emperor_confd)%>
+exec `rbenv which uwsgi` --master --die-on-term --emperor <%=fetch(:emperor_confd)%> --logto <%=fetch(:emperor_log)%>

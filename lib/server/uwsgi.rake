@@ -9,10 +9,22 @@ namespace "server:uwsgi" do
     end
   end
 
+  task :add_to_emperor=>['emperor:install'] do
+    on roles(:app) do
+      ini_file = "uwsgi-#{appname}-#{stage}.ini"
+      tmpfile = "/tmp/#{ini_file}"
+      template_upload "templates/uwsgi.ini.erb", tmpfile
+      sudo :mv, "-b #{tmpfile} #{fetch(:emperor_confd)}/#{ini_file}"
+    end
+  end
+
+  task :add_to_nginx do
+  end
+
   namespace :emperor do
     #where to put
     task :defaults do
-      setifnil :emperor_name, 'emperor'
+      setifnil :emperor_name, 'emperor_dev'
       setifnil :emperor_user, runner
       setifnil :emperor_confd, "/etc/#{fetch(:emperor_name)}"
       setifnil :emperor_init, "/etc/init/#{fetch(:emperor_name)}.conf"
@@ -26,7 +38,7 @@ namespace "server:uwsgi" do
           sudo "chown -R #{fetch(:emperor_user)}:#{fetch(:emperor_user)} #{fetch(:emperor_confd)}"
 
           template_upload 'templates/emperor.conf.erb', '/tmp/emperor.conf'
-          sudo "mv -b /tmp/emperor.conf #{fetch(:emperor_init)}"
+          sudo :mv, "-b /tmp/emperor.conf #{fetch(:emperor_init)}"
 
           sudo "touch #{fetch(:emperor_log)}"
           sudo "chown #{fetch(:emperor_user)}:#{fetch(:emperor_user)} #{fetch(:emperor_log)}"
@@ -35,7 +47,7 @@ namespace "server:uwsgi" do
     end
 
     task :uninstall=>[:defaults] do
-      on roles(:app) do |role|
+      on roles(:app) do
         if test "[ -d #{fetch(:emperor_confd)} ]"
           sudo "stop #{fetch(:emperor_name)} &>/dev/null;true"
           sudo "rm -rf #{fetch(:emperor_confd)} #{fetch(:emperor_init)} #{fetch(:emperor_log)}"
@@ -53,7 +65,7 @@ namespace "server:uwsgi" do
     end
 
     desc 'List all emperor apps'
-    task :list=>[:install] do
+    task :list=>[:defaults] do
       on roles(:app) do |role|
         sudo "ls -l #{fetch(:emperor_confd)}"
       end

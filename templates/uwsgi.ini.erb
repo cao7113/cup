@@ -1,0 +1,15 @@
+[uwsgi]
+socket = <%=shared_path%>/tmp/sockets/uwsgi.sock
+chmod-socket = 666
+#http = :3010
+#http-modifier1 = 7
+rack = config.ru
+master = true
+#processes = 2
+# starting from 4.0, Rails support multiple threads(only for ruby2.0)
+#rbthreads = 4 
+#lazy-apps = true
+chdir = <%=current_path%>
+rbrequire = bundler/setup
+env = BUNDLE_GEMFILE=Gemfile
+env = RAILS_ENV=<%=fetch(:rails_env)%>
