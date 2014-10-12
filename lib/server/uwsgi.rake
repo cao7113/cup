@@ -22,7 +22,7 @@ namespace "server:uwsgi" do
   task :add_to_emperor=>['emperor:init', :defaults] do
     on roles(:app) do
       if test "[ ! -f #{fetch(:emperor_confd)}/uwsgi-#{fetch(:app_uname)}.ini ]"
-        sudo_upload "uwsgi.ini.erb", "#{fetch(:emperor_confd)}/uwsgi-#{fetch(:app_uname)}.ini"
+        sudo_upload "uwsgi.ini.erb", "#{fetch(:emperor_confd)}/#{fetch(:app_uname)}.ini"
       end
     end
   end

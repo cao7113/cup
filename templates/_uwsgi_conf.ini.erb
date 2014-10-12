@@ -1,0 +1,52 @@
+[uwsgi]
+deploy_to        = <%= deploy_to %>
+app_name         = <%= application %>
+uid              = <%= user %>
+gid              = <%= group %>
+env              = RACK_ENV=<%= rails_env %>
+
+; Generic config
+chdir            = %(deploy_to)/current
+processes        = 2
+harakiri         = 30
+buffer-size      = 25000
+post-buffering   = 4096
+disable-logging  = true
+rack             = config.ru
+
+<% case uwsgi_mode %>
+<% when :emperor %>
+; Emperor mode
+socket-modifier1 = 7
+socket           = %(chdir)/tmp/sockets/uwsgi.sock
+pidfile          = %(chdir)/tmp/pids/uwsgi.pid
+daemonize        = %(chdir)/log/uwsgi.log
+<% when :standalone %>
+; Standalone/Proxy-Pass mode
+http-socket-modifier1 = 7
+env                   = PORT=<%= app_port %>
+http-socket           = :$(PORT)
+die-on-term           = true
+master                = true
+<% end %>
+
+; Bundler
+env              = BUNDLE_GEMFILE=%(chdir)/Gemfile
+rbrequire        = rubygems
+rbrequire        = bundler/setup
+
+; RVM
+<% if fetch(:rvm_path, nil) %>
+rvm-path         = <%= rvm_path %>
+<% end %>
+
+; Memory management
+; report memory usage inside logs
+; memory-report = true
+; reload if the rss memory is higher than 100M
+; reload-on-rss = 100
+
+; Background jobs
+; E.g. attach a sidekiq worker:
+; attach-daemon = bundle exec sidekiq -c 3 -e ${RACK_ENV}
+
