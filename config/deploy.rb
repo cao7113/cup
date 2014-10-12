@@ -51,7 +51,7 @@ if require_bundler?
   set :bundle_binstubs, false
   #set :bundle_path, -> { shared_path.join('bundle') }
   set :bundle_path, sandbox_shared_path.join('bundle')
-  set :bundle_flags, '--deployment' #--quiet
+  set :bundle_flags, '--deployment --quiet' #--quiet
 end
 
 if railsapp?
@@ -59,7 +59,6 @@ if railsapp?
 end
 
 namespace :deploy do
-
   before :starting, :start_timer do
     @start_time = Time.now
   end

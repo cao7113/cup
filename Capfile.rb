@@ -72,12 +72,24 @@ def setifnil(key, value)
   set(key, value) if fetch(key).nil?
 end
 
-def template_upload(from, to, options={})
+def template_upload(from, to, opts={})
+  from = "templates/#{from}"
   if File.file?(from)
-    upload! StringIO.new(ERB.new(File.read(from)).result(binding)), to
+    if opts[:sudo]
+      tmpname = "#{File.basename(to)}.tmp"
+      tmpfile = "/tmp/#{tmpname}"
+      upload! StringIO.new(ERB.new(File.read(from)).result(binding)), tmpfile
+      sudo :mv, "-b #{tmpfile} #{to}"
+    else
+      upload! StringIO.new(ERB.new(File.read(from)).result(binding)), to
+    end
   else
-    abort "Not found template: #{from}"
+    abort "Not found template file: #{from}!"
   end
+end
+
+def sudo_upload(from, to, opts={})
+  template_upload(from, to, (opts||{}).merge(sudo: true))
 end
 
 cup_root = File.dirname(__FILE__) 

@@ -1,0 +1,5 @@
+namespace :deploy do
+  task :try do
+    puts "====try deploy from capup gem"
+  end
+end

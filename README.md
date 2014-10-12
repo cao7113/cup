@@ -30,3 +30,9 @@
 * https://github.com/peritor/webistrano
 * https://github.com/railsware/caphub
 * https://github.com/ayanko/caphub-slides
+* http://www.talkingquickly.co.uk/2014/01/deploying-rails-apps-to-a-vps-with-capistrano-v3/
+* https://github.com/TalkingQuickly/capistrano-3-rails-template
+
+for uwsgi:
+
+* https://github.com/elia/capistrano-uwsgi

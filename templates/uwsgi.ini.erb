@@ -1,5 +1,5 @@
 [uwsgi]
-socket = <%=shared_path%>/tmp/sockets/uwsgi.sock
+socket = <%=fetch(:socket_file)%>
 chmod-socket = 666
 #http = :3010
 #http-modifier1 = 7
@@ -12,4 +12,4 @@ master = true
 chdir = <%=current_path%>
 rbrequire = bundler/setup
 env = BUNDLE_GEMFILE=Gemfile
-env = RAILS_ENV=<%=fetch(:rails_env)%>
+env = RACK_ENV=<%=rackenv%>

@@ -1,7 +1,7 @@
 #Note: run me by bin: rssh
 
 run_locally do
-  log '==############## Hi on local ...'
+  log '==############## Hi on local, try sshkit here...'
 end
 
 on 'localhost' do |host|
