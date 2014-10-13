@@ -3,12 +3,18 @@ namespace "server:nginx" do
     setifnil :nginx_confd, "/etc/nginx/conf.d"
   end
 
-  %w(status start stop restart reload configtest force-reload upgrade).each do |act| 
+  %w(start stop restart reload status configtest force-reload upgrade).each do |act| 
     desc "#{act} nginx service"
     task "#{act}" do
-      on roles(fetch(:uwsgi_role)) do |role|
+      on roles(:app) do |role|
         sudo :service, "nginx #{act}"
       end
+    end
+  end
+
+  task :list=>[:defaults] do
+    on roles(:app) do |role|
+      execute :ls, "-lt #{fetch(:nginx_confd)}"
     end
   end
 end

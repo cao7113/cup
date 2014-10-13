@@ -4,7 +4,6 @@ lock '3.2.1'
 set :application, appname
 set :repo_url, "http://localhost:6666/#{appname}"
 
-
 #set some init
 set :rbenv_root, '/opt/rbenv'
 

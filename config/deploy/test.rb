@@ -5,6 +5,9 @@ if require_bundler?
   set :bundle_without, %w{development production}.join(' ')
 end
 
+set :app_server, :uwsgi
+set :frontend_server, :none
+
 set :not_check_revision, true
 
 # Custom SSH Options

@@ -1,15 +1,22 @@
 [uwsgi]
+procname-prefix = <%=fetch(:app_uname)%>-
+auto-procname = true
+<%case fetch(:frontend_server); when :nginx%>
 socket = <%=fetch(:socket_file)%>
+#socket-modifier1 = 7
+<%when :none%>
+http-socket = :<%=fetch(:app_port)%>
+http-socket-modifier1 = 7
+<%end%>
 chmod-socket = 666
-#http = :3010
-#http-modifier1 = 7
-rack = config.ru
 master = true
 #processes = 2
 # starting from 4.0, Rails support multiple threads(only for ruby2.0)
 #rbthreads = 4 
 #lazy-apps = true
 chdir = <%=current_path%>
+pidfile = <%=pid_file%>
+rack = config.ru
 rbrequire = bundler/setup
 env = BUNDLE_GEMFILE=Gemfile
 env = RACK_ENV=<%=rackenv%>
