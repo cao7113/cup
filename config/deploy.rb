@@ -18,6 +18,8 @@ set :scm, :git
 if railsapp?
   set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets tmp/sessions vendor/bundle public/system}
   #set :linked_files, %w{config/secrets.yml}
+else
+  set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets tmp/sessions vendor/bundle}
 end
 
 # set :log_level, :debug
@@ -50,7 +52,7 @@ if require_bundler?
   set :bundle_binstubs, false
   #set :bundle_path, -> { shared_path.join('bundle') }
   set :bundle_path, sandbox_shared_path.join('bundle')
-  set :bundle_flags, '--deployment --quiet' #--quiet
+  set :bundle_flags, '--deployment' #--quiet
 end
 
 if railsapp?

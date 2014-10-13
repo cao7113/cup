@@ -54,16 +54,9 @@ case "\$1" in
     sudo netstat -lnptu|grep ":4.*ruby"
     exit
     ;;
-  log)
+  log) #cup log dev
     apptype=\$(detect_apptype \$approot)
-    case "\$apptype" in
-      rails)
-        tail -f -n 200 /sandbox/\${2:-dev}/\$appname/current/log/\${3:-development}.log
-        ;;
-      *)
-        echo Not support log for \$apptype
-        ;;
-    esac
+    tail -f -n 200 /sandbox/\${2:-dev}/\$appname/current/log/\${3:-\$2}.log
     exit
     ;;
   h|help)

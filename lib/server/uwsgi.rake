@@ -28,12 +28,15 @@ namespace "server:uwsgi" do
   end
 
   task :add_to_emperor=>[:defaults] do
-    on roles(:app) do
-      if fetch(:frontend_server) == :none
-        setifnil :app_port, checkin_app_port
-        execute :echo, "#{fetch(:app_port)} > #{port_file}"
+    on roles(:app) do |host|
+      if test "[ ! -f #{fetch(:emperor_app_conf)} ]" or ENV['force']
+        if fetch(:frontend_server) == :none
+          setifnil :app_port, checkin_app_port #not stable port ???
+          execute :echo, "#{fetch(:app_port)} > #{port_file}"
+          execute :echo, "==========Running on: http://#{host.hostname}:#{fetch(:app_port)} "
+        end
+        sudo_upload "uwsgi_conf.ini.erb", fetch(:emperor_app_conf) 
       end
-      sudo_upload "uwsgi_conf.ini.erb", fetch(:emperor_app_conf) #if test "[ ! -f #{fetch(:emperor_app_conf)} ]" or ENV['force']
     end
   end
 
@@ -65,17 +68,17 @@ namespace "server:uwsgi" do
     end
   end
 
-  task :restart=>[:add_to_emperor] do
+  task :restart=>:defaults do
     on roles(:app) do
       if test "[ -f #{fetch(:emperor_app_conf)} ]"
         sudo :touch, fetch(:emperor_app_conf)
       else
-        invoke :start
+        invoke "server:uwsgi:start"
       end
     end
   end
 
-  task :status=>:defaults do
+  task :status do
     on roles(:app) do
       pid = capture(:cat, pid_file).chomp
       if test "kill -0 #{pid} &>/dev/null"

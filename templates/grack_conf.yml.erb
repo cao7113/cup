@@ -1,0 +1,11 @@
+#Generated at <%=Time.now%>
+#required
+:project_root: <%=fetch(:repos_root)%>
+:git_path: <%=capture('which git')%>
+:upload_pack: true
+:receive_pack: true
+
+#是否进行权限认证
+:auth_check: true
+:db_root: <%=fetch(:db_root)%>
+:log_root: <%=fetch(:log_root)%>

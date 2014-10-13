@@ -47,5 +47,5 @@ namespace "server:webrick" do
   end
 
   desc 'Restart'
-  task :restart =>['server:webrick:stop', 'server:webrick:start']
+  task :restart =>['server:webrick:hard_restart']
 end

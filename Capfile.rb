@@ -118,3 +118,4 @@ end
 
 #improve to only load current required?
 Dir.glob('lib/server/*.rake').each { |r| import r }
+Dir.glob("app/#{appname}*.rake").each { |r| import r }

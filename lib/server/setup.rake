@@ -23,11 +23,20 @@ def port_file
   fetch :port_file, shared_path.join('tmp/port')
 end
 
+def log_file
+  fetch :log_file, shared_path.join("log/#{stage}.log")
+end
+
 namespace :server do
   %w{start stop restart status url}.each do |action|
     Rake::Task.define_task(action) do
       invoke "server:#{app_server}:#{action}"
     end
+  end
+
+  task :hard_restart do
+    invoke "server:#{app_server}:stop"
+    invoke "server:#{app_server}:start"
   end
 
   desc "Get current server info"
