@@ -33,10 +33,6 @@ using shared_path/db.sqlite3
 
   利用 cap --rakefile xxx
 
-* cap-uwsgi, unicorn
-
-  prod, nginx
-
 * 为避免麻烦，默认选取master分支?
 
 * config/deploy.rb, config/deploy/_stage_.rb 哪个先被加载？ 变量是否被覆盖？
@@ -58,10 +54,6 @@ using shared_path/db.sqlite3
   智能,明确,本地预编译
 
 * 配合puppet/chef部署
-
-* ports智能管理
-
-  通过netcat命令探测是否已经被占用，使用范围： 4010 -- 5000
 
 * 在运行task时能否显示当前运行task name！！！
 

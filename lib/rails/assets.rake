@@ -33,15 +33,13 @@ namespace :deploy do
             end
           end
           assets_dir = fetch(:shared_assets_path).join(to_revision)
-          on roles(:app) do |role|
+          on roles(:app) do |host|
             if test "[ -d #{assets_dir} ]"
               execute :echo, "Rm old existed #{assets_dir} to use new one!"
               execute :rm, "-fr #{assets_dir}"
             end
             execute :mkdir, '-pv', fetch(:shared_assets_path)
-            run_locally do
-              execute "rsync -av public/assets/ #{role.user}@#{role.hostname}:#{assets_dir}" 
-            end
+            rsync_upload host, 'public/assets/', assets_dir
             execute :ln, '-s', assets_dir, release_path.join('public', 'assets')
             #record this revision as current working assets verion
             execute :echo, "-n #{to_revision} > #{fetch(:assets_version_file)}"

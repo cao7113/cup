@@ -92,6 +92,21 @@ def sudo_upload(from, to, opts={})
   template_upload(from, to, (opts||{}).merge(sudo: true))
 end
 
+def rsync_upload(host, from, to, opts={})
+  run_locally do
+    ssh_str = ""
+    auth_method = host.ssh_options[:auth_methods].first
+    if auth_method and auth_method.to_s == 'publickey'
+      ssh_str << " -i #{host.ssh_options[:keys].first} "
+    end
+    ssh_str << " -p #{host.port} " if host.port != 22
+    if ssh_str.strip.length > 0
+      ssh_str = "-e 'ssh #{ssh_str}'"
+    end
+    execute "rsync #{ssh_str} -av #{from} #{host.user}@#{host.hostname}:#{to}" 
+  end
+end
+
 cup_root = File.dirname(__FILE__) 
 lib_dir = File.join(cup_root, 'lib')
 $:.unshift lib_dir unless $:.include?(lib_dir)
@@ -118,4 +133,6 @@ end
 
 #improve to only load current required?
 Dir.glob('lib/server/*.rake').each { |r| import r }
-Dir.glob("app/#{appname}*.rake").each { |r| import r }
+if File.exists?("#{approot}/Cupfile.rb")
+  load "#{approot}/Cupfile.rb"
+end

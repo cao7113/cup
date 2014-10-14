@@ -17,7 +17,7 @@ namespace "server:uwsgi" do
   end
 
   desc "Install uwsgi for ruby/rack app"
-  task :setup=>[:defaults] do
+  task :install=>[:defaults] do
     on roles(:app) do
       if test "! rbenv which uwsgi &>/dev/null" #"! gem query -in uwsgi &>/dev/null"
         sudo "apt-get -y install libssl-dev libpcre3-dev"
@@ -26,6 +26,8 @@ namespace "server:uwsgi" do
       invoke "server:uwsgi:emperor:install"
     end
   end
+
+  before "deploy:starting", "server:uwsgi:install"
 
   task :add_to_emperor=>[:defaults] do
     on roles(:app) do |host|
@@ -97,6 +99,7 @@ namespace "server:uwsgi" do
       else
         if test "[ -f #{port_file} ]"
           port = capture(:cat, port_file).chomp
+          #TODO GET IP
           log "==visit: http://localhost:#{port}"
         else
           log "No port file: #{port_file}"
@@ -122,6 +125,7 @@ namespace "server:uwsgi" do
           sudo_upload 'uwsgi_emperor.conf.erb', fetch(:emperor_init)
           sudo "touch #{fetch(:emperor_log)}"
           sudo "chown #{fetch(:emperor_user)}:#{fetch(:emperor_user)} #{fetch(:emperor_log)}"
+          invoke 'server:uwsgi:emperor:start'
         end
       end
     end

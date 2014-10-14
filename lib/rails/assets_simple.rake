@@ -7,10 +7,8 @@ namespace :deploy do
       run_locally do
         execute "bundle exec rake assets:precompile"
       end
-      on roles(:app) do |role|
-        run_locally do
-          execute "rsync -av public/assets/ #{role.user}@#{role.hostname}:#{release_path}/public/assets/" 
-        end
+      on roles(:app) do |host|
+        rsync_upload host, 'public/assets/',  "#{release_path}/public/assets/"
       end
       run_locally do
         execute "rm -fr public/assets"

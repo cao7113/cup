@@ -6,7 +6,7 @@ namespace "server:webrick" do
       within release_path do
         if railsapp?
           execute :rails, "s -e #{rackenv} -d -p #{port}"
-          execute :echo, "#{port} > #{fetch(:port_file)}"
+          execute :echo, "#{port} > #{port_file}"
         else #plain, rack
           execute :echo, 'Nothing to do!'
         end
@@ -17,7 +17,7 @@ namespace "server:webrick" do
   desc 'Display visit url'
   task :url do
     on roles(:app) do |host|
-      port = capture(:cat, fetch(:port_file)).chomp
+      port = capture(:cat, port_file).chomp
       log "==>  Visit: http://#{host}:#{port}"
     end
   end
@@ -47,5 +47,5 @@ namespace "server:webrick" do
   end
 
   desc 'Restart'
-  task :restart =>['server:webrick:hard_restart']
+  task :restart =>['server:hard_restart']
 end

@@ -1,9 +1,8 @@
 #set :branch, 'production'
-if railsapp?
-  set :rails_env, 'production'
-end
-#set :runner, 'xxx' #TODO READ FROM ENV
+set :rack_env, 'production'
 server 'localhost', user: runner, roles: %w{web app db}
+set :app_server, :uwsgi
+set :frontend_server, :none
 
 # Custom SSH Options
 # ==================
