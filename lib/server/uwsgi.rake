@@ -27,8 +27,6 @@ namespace "server:uwsgi" do
     end
   end
 
-  before "deploy:starting", "server:uwsgi:install"
-
   task :add_to_emperor=>[:defaults] do
     on roles(:app) do |host|
       if test "[ ! -f #{fetch(:emperor_app_conf)} ]" or ENV['force']

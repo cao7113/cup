@@ -1,0 +1,8 @@
+server {
+  listen       80;
+  server_name  <%=fetch(:nginx_domain_names)%>;
+
+  root <%=deploy_to%>/current;
+  access_log <%=fetch(:nginx_access_log)%>;
+  error_log <%=fetch(:nginx_error_log)%> info;
+}

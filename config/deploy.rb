@@ -78,6 +78,25 @@ namespace :deploy do
   end
   before :starting, :check_dirs
 
+  before :starting, :app_check do
+    if plainapp?
+      on roles(fetch(:app_role,:web)) do
+        if test "[ -d #{deploy_to} ]"
+          execute "cd #{deploy_to} && git pull" 
+        else
+          execute :git, "clone #{repo_url} #{deploy_to}" 
+        end
+      end
+      #support nginx site here
+      
+      exit #break task chains
+    end
+
+    if fetch(:app_server) == :uwsgi
+      invoke "server:uwsgi:install"
+    end
+  end
+
   desc 'Sync config use scp'
   task :sync_config do
     if prodlike?
@@ -114,7 +133,7 @@ namespace :deploy do
   desc 'Restart your application when deployment'
   task :restart do 
     if plainapp?
-      on roles(:app) do #, in: :sequence, wait: 5 do
+      on roles(:app) do 
         info "====Replace restart way!"
       end
     else
@@ -135,13 +154,20 @@ namespace :deploy do
   #check status task after finished and notify!!!
 
   desc "Purge deployment state"
-  task :purge=>'server:stop' do
-    on roles(:app) do
-      execute :rm, "-rf", releases_path
-      execute :rm, "-rf", current_path
-      execute :rm, "-rf", repo_path #in case switch repo_url
-      execute :rm, "-rf", deploy_to.join("revisions.log")
-      #keep shared_path to save db or bundle cache
+  task :purge do
+    if plainapp?
+      on roles(:app) do
+        execute :rm, "-rf", deploy_to
+      end
+    else
+      invoke "server:stop"
+      on roles(:app) do
+        execute :rm, "-rf", releases_path
+        execute :rm, "-rf", current_path
+        execute :rm, "-rf", repo_path #in case switch repo_url
+        execute :rm, "-rf", deploy_to.join("revisions.log")
+        #keep shared_path to save db or bundle cache
+      end
     end
   end
 

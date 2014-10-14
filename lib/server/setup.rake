@@ -34,6 +34,8 @@ namespace :server do
     end
   end
 
+  task :boot
+
   task :hard_restart do
     invoke "server:#{app_server}:stop"
     invoke "server:#{app_server}:start"
