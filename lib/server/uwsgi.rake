@@ -1,6 +1,5 @@
 namespace "server:uwsgi" do
   task :defaults do
-    setifnil :app_uname, "#{appname}-#{stage}"
     invoke "server:uwsgi:emperor:defaults"
     setifnil :emperor_app_conf, "#{fetch(:emperor_confd)}/#{fetch(:app_uname)}.ini"
 
@@ -10,9 +9,6 @@ namespace "server:uwsgi" do
       setifnil :socket_file, shared_path.join("tmp/sockets/uwsgi.sock")
       invoke "server:nginx:defaults"
       setifnil :nginx_app_conf, "#{fetch(:nginx_confd)}/uwsgi-#{fetch(:app_uname)}.conf"
-      setifnil :nginx_domain_names, "#{fetch(:app_uname)}.lh #{appname}.#{stage}"
-      setifnil :nginx_access_log, shared_path.join('log/nginx_access.log')
-      setifnil :nginx_error_log, shared_path.join('log/nginx_error.log')
     end
   end
 

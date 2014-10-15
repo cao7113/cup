@@ -1,5 +1,5 @@
 set :repo_url, "http://10.0.2.2:6666/#{appname}"
-set :rack_env, 'staging'
+set :rack_env, 'vm'
 
 #vagrant ssh-config
 #Host cup-vm
@@ -39,7 +39,6 @@ task :ssh_test do
   #puts vm_host_hash
   on roles(:app) do |host|
     execute :whoami
-    binding.pry
   end
 end
 

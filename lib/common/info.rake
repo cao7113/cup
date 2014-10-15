@@ -1,9 +1,17 @@
 namespace :info do
 
+  task :ping do
+    on roles(:app) do
+      execute :uptime
+      execute :whoami
+      execute :echo, '==pong'
+    end
+  end
+
   desc "Revision current running in server"
   task :rev do
     on roles(:app).first do
-      execute :cat, current_path.join('REVISION')
+      puts capture(:cat, current_path.join('REVISION'))
     end
   end
 

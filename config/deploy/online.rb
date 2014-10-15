@@ -1,9 +1,8 @@
 #set :branch, 'production'
-if railsapp?
-  set :rails_env, 'online'
-end
-#set :runner, 'xxx' #TODO READ FROM ENV
-server 'localhost', user: runner, roles: %w{web app db}
+set :repo_url, "file:///data/repos/#{appname}.git"
+set :rack_env, 'online'
+set :runner, 'doger' #TODO READ FROM ENV
+server 'shareup.me', user: runner, roles: %w{web app db}
 
 # Custom SSH Options
 # ==================
@@ -13,8 +12,8 @@ server 'localhost', user: runner, roles: %w{web app db}
 # Global options
 # --------------
 set :ssh_options, {
-  #keys: %w(/home/rlisowski/.ssh/id_rsa),
-  forward_agent: false,
+  keys: %w(/home/cao/.ssh/id_rsa),
+  forward_agent: true, #false,
   auth_methods: %w(publickey password)
 }
 #

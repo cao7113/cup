@@ -2,7 +2,7 @@
 
 * edit Gemfile to use capistrano-rails gem
 * bundle install
-* cap install STAGES=test,staging,production
+* cap install STAGES=test,vm,production
 * config Capfile, config/deploy.rb, config/deploy/*.rb
 
 ### Stages
@@ -12,7 +12,7 @@
 * prod:        local production mode, production branch
 
 Build two production-based environments! RAILS_ENV=stating|online
-* staging:     vm mock vps, production branch
+* vm:     vm mock vps, production branch
 * online:      vps online, production branch
 
 Note: Capistrano mainly used for production deployment !!! not development/test mode!

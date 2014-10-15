@@ -6,7 +6,7 @@
 #
 namespace :load do
   task :assets_defaults do
-    set :enable_locally_compile_assets, fetch(:enable_locally_compile_assets, %w{production staging online}.include?(fetch(:rails_env).to_s))
+    set :enable_locally_compile_assets, fetch(:enable_locally_compile_assets, %w{production vm online}.include?(fetch(:rails_env).to_s))
     set :check_assets_paths, fetch(:check_assets_paths, %w{app/assets lib/assets vendor/assets})
     set :shared_assets_path, fetch(:shared_assets_path, shared_path.join('assets'))
     set :assets_version_file, fetch(:assets_version_file, shared_path.join("assets_version"))
@@ -56,7 +56,7 @@ namespace :deploy do
           end
         else #not compile, link to last working revision assets if found
           on roles(:app) do
-            current_assets_version = File.read(fetch(:assets_version_file))
+            current_assets_version = capture("cat #{fetch(:assets_version_file)}").chomp
             assets_dir = fetch(:shared_assets_path).join(current_assets_version) 
             unless test "[ -d #{assets_dir} ]"
               error "No found assets dir: #{assets_dir}!" #Never happen?

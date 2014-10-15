@@ -7,6 +7,8 @@ socket = <%=fetch(:socket_file)%>
 <%when :none%>
 http-socket = :<%=fetch(:app_port)%>
 http-socket-modifier1 = 7
+#http = xxx
+#http-modifier1 = 7
 <%end%>
 chmod-socket = 666
 master = true
@@ -21,3 +23,5 @@ rbrequire = bundler/setup
 env = BUNDLE_GEMFILE=Gemfile
 env = RACK_ENV=<%=rackenv%>
 logto = <%=log_file%>
+#allow stdin
+#honour-stdin = true

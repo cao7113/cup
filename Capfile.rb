@@ -60,7 +60,7 @@ def rackenv
 end
 
 def prodlike?
-  rackenv and [:production, :staging, :online].include?(rackenv.to_sym)
+  rackenv and [:production, :vm, :online].include?(rackenv.to_sym)
 end
 
 def require_bundler?
@@ -134,5 +134,5 @@ end
 #improve to only load current required?
 Dir.glob('lib/server/*.rake').each { |r| import r }
 if File.exists?("#{approot}/Cupfile.rb")
-  load "#{approot}/Cupfile.rb"
+  import "#{approot}/Cupfile.rb"
 end

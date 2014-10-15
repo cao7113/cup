@@ -19,9 +19,8 @@ module GitCheckStrategy
     unless fetch(:not_check_revision)
       remote_revision = fetch_revision
       if remote_revision == fetch(:previous_revision)
-        #context.execute :echo, "Error:  Stay on previous revision: #{remote_revision} in #{fetch(:branch)} branch!" 
-        context.error " ====> Stay on previous revision: #{remote_revision} in #{fetch(:branch)} branch!" 
-        exit(false) 
+        context.error " ====> 无代码变化: #{remote_revision} in #{fetch(:branch)} branch!" 
+        exit
       end
     end
   end

@@ -1,7 +1,7 @@
 namespace :deploy do
   desc "compiles assets locally then rsync, simple and bugless!"
   task :compile_assets_locally_simple do
-    set :enable_locally_compile_assets, fetch(:enable_locally_compile_assets, %w{production staging online}.include?(fetch(:rails_env).to_s))
+    set :enable_locally_compile_assets, fetch(:enable_locally_compile_assets, %w{production vm online}.include?(fetch(:rails_env).to_s))
     if fetch(:enable_locally_compile_assets)
       #问题： 每次发布都会进行编译！！！
       run_locally do

@@ -2,6 +2,7 @@
 lock '3.2.1'
 
 set :application, appname
+set :app_uname, "#{appname}-#{stage}"
 set :repo_url, "http://localhost:6666/#{appname}"
 
 #set some init
@@ -80,54 +81,29 @@ namespace :deploy do
 
   before :starting, :app_check do
     if plainapp?
-      on roles(fetch(:app_role,:web)) do
-        if test "[ -d #{deploy_to} ]"
-          execute "cd #{deploy_to} && git pull" 
-        else
-          execute :git, "clone #{repo_url} #{deploy_to}" 
-        end
-      end
-      #support nginx site here
-      
-      exit #break task chains
+      invoke "site:deploy"
+      exit
     end
-
     if fetch(:app_server) == :uwsgi
       invoke "server:uwsgi:install"
     end
   end
 
-  desc 'Sync config use scp'
-  task :sync_config do
-    if prodlike?
-      approot_run do
-        set :linked_files, fetch(:linked_files, []).push('config/application.yml')
-        invoke 'deploy:check:make_linked_dirs' #for linked_files config
-        on roles(:app) do
-          (fetch(:linked_files)||[]).each do |f|
-            target_file = File.join(shared_path, f)
-            if test("[ ! -e #{target_file} ]") || fetch(:force_upload) 
-              upload! 'config/application.yml', target_file
-            end
-          end
+  if railsapp?
+    before :starting, :check do
+      on roles(:app) do
+        unless test "[ -f /pconf/#{appname}.yml ]"
+          abort "No application.yml configuration!"
         end
       end
-    end 
-  end
-
-  if railsapp?
-    before :starting, :sync_config #尽早check，避免产生不必要的release
-  end
-
-  desc "Handle config update, how to use rsync?"
-  task :upload_config do
-    set :force_upload, true
-    invoke 'deploy:sync_config'
-  end
-
-  if railsapp?
+    end
     after :updating, :compile_assets_locally
     before :updated, "db:sqlite3:ensure_db"
+    after :updated, :link_conf do
+      on roles(:app) do
+        execute :ln, "-sb /pconf/#{appname}.yml #{release_path.join('config/application.yml')}"
+      end
+    end
   end
 
   desc 'Restart your application when deployment'
@@ -155,19 +131,13 @@ namespace :deploy do
 
   desc "Purge deployment state"
   task :purge do
-    if plainapp?
-      on roles(:app) do
-        execute :rm, "-rf", deploy_to
-      end
-    else
-      invoke "server:stop"
-      on roles(:app) do
-        execute :rm, "-rf", releases_path
-        execute :rm, "-rf", current_path
-        execute :rm, "-rf", repo_path #in case switch repo_url
-        execute :rm, "-rf", deploy_to.join("revisions.log")
-        #keep shared_path to save db or bundle cache
-      end
+    invoke "server:stop"
+    on roles(:app) do
+      execute :rm, "-rf", releases_path
+      execute :rm, "-rf", current_path
+      execute :rm, "-rf", repo_path #in case switch repo_url
+      execute :rm, "-rf", deploy_to.join("revisions.log")
+      #keep shared_path to save db or bundle cache
     end
   end
 
