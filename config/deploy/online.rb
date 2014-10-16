@@ -1,8 +1,10 @@
-#set :branch, 'production'
-set :repo_url, "file:///data/repos/#{appname}.git"
+set :repo_url, "http://localhost:8888/#{appname}"
 set :rack_env, 'online'
 set :runner, 'doger' #TODO READ FROM ENV
-server 'shareup.me', user: runner, roles: %w{web app db}
+server '128.199.149.155', user: runner, roles: %w{web app db}
+
+set :app_server, :uwsgi
+set :frontend_server, :nginx #none
 
 # Custom SSH Options
 # ==================

@@ -16,7 +16,7 @@ module GitCheckStrategy
   def update
     git :remote, :update
     #增加revision check，在deploy:updating的invoke "#{scm}:create_release"时调用！
-    unless fetch(:not_check_revision)
+    unless fetch(:not_check_revision) or ENV['not_check_revision']
       remote_revision = fetch_revision
       if remote_revision == fetch(:previous_revision)
         context.error " ====> 无代码变化: #{remote_revision} in #{fetch(:branch)} branch!" 
