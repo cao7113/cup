@@ -22,6 +22,7 @@ rack = config.ru
 rbrequire = bundler/setup
 env = BUNDLE_GEMFILE=Gemfile
 env = RACK_ENV=<%=rackenv%>
+env = ASSETS_HOST=<%=fetch(:assets_host)%>
 logto = <%=log_file%>
 #allow stdin
 #honour-stdin = true

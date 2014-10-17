@@ -2,7 +2,7 @@ namespace "server:nginx" do
   task :defaults do
     setifnil :nginx_confd, "/etc/nginx/conf.d"
     setifnil :domain_postfix, 'lh'
-    setifnil :nginx_domain_names, "#{appname}.#{stage}, #{appname}.#{fetch(:domain_postfix, 'lh')}"
+    setifnil :nginx_domain_names, "#{stage}-#{appname}.#{fetch(:domain_postfix, 'lh')}"
     setifnil :nginx_access_log, shared_path.join('log/nginx_access.log')
     setifnil :nginx_error_log, shared_path.join('log/nginx_error.log')
   end

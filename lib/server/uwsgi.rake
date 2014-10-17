@@ -25,7 +25,7 @@ namespace "server:uwsgi" do
 
   task :add_to_emperor=>[:defaults] do
     on roles(:app) do |host|
-      if test "[ ! -f #{fetch(:emperor_app_conf)} ]" or ENV['force']
+      if true #test "[ ! -f #{fetch(:emperor_app_conf)} ]" or ENV['force']
         if fetch(:frontend_server) == :none
           setifnil :app_port, checkin_app_port #not stable port ???
           execute :echo, "#{fetch(:app_port)} > #{port_file}"
@@ -38,7 +38,7 @@ namespace "server:uwsgi" do
 
   task :add_to_nginx=>[:defaults] do
     on roles(:app) do
-      if test "[ ! -f #{fetch(:nginx_app_conf)} ]"
+      if test "[ ! -f #{fetch(:nginx_app_conf)} ]" #??? or ENV['force']
         sudo_upload 'uwsgi_nginx.conf.erb', "#{fetch(:nginx_app_conf)}"
         invoke "server:nginx:reload"
       end

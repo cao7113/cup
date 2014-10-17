@@ -1,11 +1,19 @@
 #site type: plain, static(has nginx config)
+def site_path
+  fetch(:site_path)
+end
+
 namespace :site do
-  task :deploy do
+  task :defaults do
+    setifnil :site_path, deploy_to.join('current')
+  end
+
+  task :deploy=>:defaults do
     on roles(:web) do
-      if test "[ -d #{deploy_to} ]"
-        execute "cd #{deploy_to} && git pull" 
+      if test "[ -d #{site_path} ]"
+        execute "cd #{site_path} && git pull" 
       else
-        execute :git, "clone #{repo_url} #{deploy_to}" 
+        execute :git, "clone #{repo_url} #{site_path}" 
         invoke "site:start"
       end
     end
@@ -17,7 +25,7 @@ namespace :site do
     end
   end
 
-  task :start do
+  task :start=>:defaults do
     next unless fetch(:site_type) == :static 
     invoke "server:nginx:defaults"
     on roles(:web) do
@@ -28,7 +36,7 @@ namespace :site do
     end
   end
 
-  task :stop do
+  task :stop=>:defaults do
     next unless fetch(:site_type) == :static 
     on roles(:web) do
       invoke "server:nginx:defaults"
