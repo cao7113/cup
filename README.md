@@ -33,6 +33,11 @@
 * http://www.talkingquickly.co.uk/2014/01/deploying-rails-apps-to-a-vps-with-capistrano-v3/
 * https://github.com/TalkingQuickly/capistrano-3-rails-template
 
-for uwsgi:
+for uWSGI:
 
 * https://github.com/elia/capistrano-uwsgi
+
+for Puma: 
+
+* https://github.com/tomjoro/puma_jungle_rbenv_cap3
+* https://github.com/cao7113/capistrano-puma
