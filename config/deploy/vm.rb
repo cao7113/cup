@@ -14,6 +14,9 @@ set :rack_env, 'vm'
   #LogLevel FATAL
 #access by host_hash['User']
 def vm_host_hash
+  if stage.strip.empty? #for cup -vT
+    return {'VmHostUrl'=>'localhost'} 
+  end
   return @vm_host if @vm_host
   run_locally do
     config = capture("vagrant ssh-config --host cup-vm").split(/\n/)
@@ -29,7 +32,7 @@ def vm_host_hash
   end
 end
 
-set :runner, vm_host_hash['User'] 
+set :runner, vm_host_hash['User']
 server vm_host_hash['VmHostUrl'], user: runner, roles: %w{web app db}
 
 set :app_server, :uwsgi
