@@ -3,7 +3,8 @@ lock '3.2.1'
 
 set :application, appname
 set :app_uname, "#{appname}-#{stage}"
-set :repo_url, "http://localhost:8888/#{appname}"
+#set :repo_url, "http://localhost:8888/#{appname}"
+set :repo_url, "/home/#{local_user}/dev/#{appname}"
 
 #set some init
 set :rbenv_root, '/opt/rbenv'

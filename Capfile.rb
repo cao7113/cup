@@ -2,8 +2,9 @@
 #  explicitly referred as: cap --rakefile _this_file_
 
 #adjust by env or stage var?
-require 'pry'
-require 'pry-debugger'
+require 'byebug'
+#require 'pry'
+#require 'pry-debugger'
 #make a cup logger write to /sandbox/deployment.log
 
 require 'bundler'
