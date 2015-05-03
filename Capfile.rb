@@ -3,6 +3,7 @@
 
 #adjust by env or stage var?
 require 'pry'
+require 'byebug'
 #make a cup logger write to /sandbox/deployment.log
 
 require 'bundler'

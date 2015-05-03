@@ -13,11 +13,15 @@
 * cup init
 * cup dev|test|prod|... deploy
 
-### TODOS
+### TODO
 
 * 生成寄存于项目的cap文件，可以平移
 
 ### Problems
+
+太繁琐，使用太不方便， 自动化水平太低！！！
+
+重构 改造！
 
 * where to invoke cap? in cup root or app root?
 
