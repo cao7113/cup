@@ -1,9 +1,10 @@
 #source "https://rubygems.org"
 source "http://ruby.taobao.org"
 
-group :development do
+group :development, :test do
+  gem 'byebug'
   gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-byebug'
 
   gem 'capistrano'
   gem 'capistrano-bundler'
